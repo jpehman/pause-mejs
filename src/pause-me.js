@@ -1,6 +1,6 @@
-"use strict";
-
 function pauseme (callback, duration) {
+  "use strict";
+
   var startTime = null, pauseTime = null,
       remainingTime = 0,
       timer = null;
@@ -65,7 +65,7 @@ function pauseme (callback, duration) {
     "pause": pause,
     "resume": resume,
     "stop": stop
-  }
+  };
 }
 
 module.exports = pauseme; 
