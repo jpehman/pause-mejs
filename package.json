@@ -4,7 +4,7 @@
 	"description": "A small dependency free setTimeout utility that allows pausing, resuming, stopping and starting a timeout.",
 	"author": "Jonathan Ehman <jpehman@gmail.com>",
 	"bin": {
-		"pause-mejs": "./bin/pause-me"
+		"pause-mejs": "./bin/pause-mejs"
 	},
 	"main": "./src/pause-me.js",
 	"repository": {
