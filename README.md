@@ -1,18 +1,32 @@
-# pause-mejs
-A small dependency free setTimeout utility that allows pausing, resuming, stopping and starting a timeout.
+# pause-me, A Dependency Free setTimeout Utility
 
+
+The "pause-me" utility allows pausing, resuming, stopping and starting a `setTimeout`.
+
+# Install #
+
+	$ npm install pause-me --save
 
 # Node #
 
 
-    const pauseme = require("pause-me");
+    const pauseMe = require("pause-me");
 
 
 Use it like you would a setTimeout
 
-	const myTimeout = pauseme(function () {
+	const myTimeout = pauseMe(function () {
 		console.log("timed out!");
 	}, 5000);
+
+
+or 
+
+	const myTimeoutFunc = function () {
+		console.log("timed out!");
+	};
+
+	const myTimeout = pauseMe(myTimeoutFunc, 5000);
 
 ## pause ##
 
