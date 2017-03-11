@@ -1,5 +1,5 @@
 # pause-me, A Dependency Free setTimeout Utility
-
+[ [pause-me on npm](https://www.npmjs.com/package/pause-me "npm") ]
 
 The "pause-me" utility allows pausing, resuming, stopping and starting a `setTimeout`.
 
