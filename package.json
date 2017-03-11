@@ -1,24 +1,28 @@
 {
-	"name": "pause-mejs",
-	"version": "1.0.0",
-	"description": "A small dependency free setTimeout utility that allows pausing, resuming, stopping and starting a timeout.",
-	"author": "Jonathan Ehman <jpehman@gmail.com>",
-	"bin": {
-		"pause-mejs": "./bin/pause-mejs"
-	},
-	"main": "./src/pause-me.js",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/jpehman/pause-mejs"
-	},
-	"bugs": {
-		"url": "https://github.com/jpehman/pause-mejs/issues"
-	},
-	"keywords": [
-		"setTimeout",
-		"timeout",
-		"setInterval",
-		"pause"
-	],
-	"license": "MIT"
+  "name": "pause-me",
+  "version": "1.0.0",
+  "description": "A small dependency free setTimeout utility that allows pausing, resuming, stopping and starting a timeout.",
+  "author": "Jonathan Ehman <jpehman@gmail.com>",
+  "bin": {
+    "pause-me": "./bin/pause-me"
+  },
+  "main": "./src/pause-me.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jpehman/pause-mejs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jpehman/pause-mejs/issues"
+  },
+  "keywords": [
+    "setTimeout",
+    "timeout",
+    "setInterval",
+    "pause"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/jpehman/pause-mejs#readme",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
 }
