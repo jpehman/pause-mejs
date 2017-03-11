@@ -16,6 +16,10 @@ function pauseme (callback, duration) {
   remainingTime = duration;
 
   var start = function () {
+    if (timer !== null) {
+      return;
+    }
+
     timer = setTimeout(callback, remainingTime);
     startTime = new Date();
   },
