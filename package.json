@@ -1,0 +1,23 @@
+{
+	"name": "pause-mejs",
+	"version": "1.0.0",
+	"description": "A small dependency free setTimeout utility that allows pausing, resuming, stopping and starting a timeout.",
+	"author": "Jonathan Ehman <jpehman@gmail.com>",
+	"bin": {
+		"pause-mejs": "./bin/pause-me.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/jpehman/pause-mejs"
+	},
+	"bugs": {
+		"url": "https://github.com/jpehman/pause-mejs/issues"
+	},
+	"keywords": [
+		"setTimeout",
+		"timeout",
+		"setInterval",
+		"pause"
+	],
+	"license": "MIT"
+}
