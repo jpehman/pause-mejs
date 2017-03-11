@@ -5,7 +5,7 @@ A small dependency free setTimeout utility that allows pausing, resuming, stoppi
 # Node #
 
 
-    const pauseme = require("pause-me.js");
+    const pauseme = require("pause-me");
 
 
 Use it like you would a setTimeout
