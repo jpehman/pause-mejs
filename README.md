@@ -5,12 +5,12 @@ The "pause-me" utility allows pausing, resuming, stopping and starting a `setTim
 
 # Install #
 
-	  $ npm install pause-me --save
+	  $ npm install pause-me --save  
 
 # Node #
 
 
-      const pauseMe = require("pause-me");
+      const pauseMe = require("pause-me");  
 
 Use it like you would a `setTimeout`
 
@@ -65,7 +65,7 @@ So you can still start the timeout from the beginning again if you want to.
 	  myTimeout.start();  
 
 ## timer ##
-Also added in 1.1.0, you can test the `setTimeout` instance to see whether or not is still running.
+Also added in 1.1.0, you can test the `setTimeout` instance to see whether or not it is still running.
 
 	  if (myTimeout.timer() === null) {  
 	    //myTimeout is not running
