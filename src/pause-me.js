@@ -1,8 +1,8 @@
-function pauseme (callback, duration) {
+function pauseme (callback, duration, repeating) {
   "use strict";
 
   var startTime = null, pauseTime = null,
-      remainingTime = 0,
+      remainingTime = 0, originalCallback = callback,
       timer = null;
 
   callback = callback || function () {};
@@ -16,10 +16,6 @@ function pauseme (callback, duration) {
   remainingTime = duration;
 
   var start = function () {
-    if (timer !== null) {
-      return;
-    }
-
     timer = setTimeout(callback, remainingTime);
     startTime = new Date();
   },
@@ -39,11 +35,12 @@ function pauseme (callback, duration) {
   },
 
   resume = function () {
-    if (timer !== null) {
+    if (timer !== null || pauseTime === null) {
       return;
     }
 
     remainingTime -= pauseTime.getTime() - startTime.getTime();
+    pauseTime = null;
     if (remainingTime) {
       start();
     }
@@ -55,16 +52,36 @@ function pauseme (callback, duration) {
     }
 
     remainingTime = duration;
+    pauseTime = null;
     clear();
   };
+
+  if (repeating) {
+    callback = function () {
+      originalCallback();
+      remainingTime = duration;
+      clear();
+      start();
+    }
+  }
 
   start();
 
   return {
-    "start": start,
+    "start": function () {
+      if (timer !== null) {
+        return;
+      }
+
+      remainingTime = duration;
+      start();
+    },
     "pause": pause,
     "resume": resume,
-    "stop": stop
+    "stop": stop,
+    "timer": function () {
+      return timer;
+    }
   };
 }
 
