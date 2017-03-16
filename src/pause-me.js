@@ -1,3 +1,18 @@
+/*
+ *@summary JavaScript setTimeout and setInterval utility that allows pausing, resuming, stopping, and starting a setTimeout
+ *@license {@link https://github.com/jpehman/pause-mejs/blob/master/LICENSE}
+ *@author Jonathan Ehman
+ *@typedef object
+ *@example
+ * const pauseMe = require("pause-me");
+ * 
+ * const myTimeout = pauseMe(() => {
+ *  console.log("timed out!");
+ * }, 5000);
+ * @param {function} callback - optional - function or lambda that you want executed after duration. If you do not include a callback, what's the point?
+ * @param {number} duration - required - Milliseconds to set the timeout to. Throws an error if not a number or not included 
+ * @param {bool} repeating - optional - When true the timeout is treated as an interval 
+ */
 function pauseMe (callback, duration, repeating) {
   "use strict";
 
@@ -27,6 +42,7 @@ function pauseMe (callback, duration, repeating) {
 
   pause = function () {
     if (timer === null) {
+      // do not pause if paused or stopped
       return;
     }
 
@@ -36,6 +52,7 @@ function pauseMe (callback, duration, repeating) {
 
   resume = function () {
     if (timer !== null || pauseTime === null) {
+      // do not resume if not paused or stopped
       return;
     }
 
@@ -48,6 +65,7 @@ function pauseMe (callback, duration, repeating) {
 
   stop = function () {
     if (timer === null) {
+      // do not stop if paused or stopped already
       return;
     }
 
@@ -57,6 +75,7 @@ function pauseMe (callback, duration, repeating) {
   };
 
   if (repeating) {
+    // setting the callback to call the passed callback
     callback = function () {
       originalCallback();
       remainingTime = duration;
@@ -70,9 +89,11 @@ function pauseMe (callback, duration, repeating) {
   return {
     "start": function () {
       if (timer !== null) {
+        // do not try to start if the timer is going already
         return;
       }
 
+      // the remainingTime must be reset
       remainingTime = duration;
       start();
     },
@@ -85,4 +106,4 @@ function pauseMe (callback, duration, repeating) {
   };
 }
 
-module.exports = pauseMe; 
+module.exports = pauseMe;
