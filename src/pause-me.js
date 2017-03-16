@@ -1,4 +1,4 @@
-function pauseme (callback, duration, repeating) {
+function pauseMe (callback, duration, repeating) {
   "use strict";
 
   var startTime = null, pauseTime = null,
@@ -85,4 +85,4 @@ function pauseme (callback, duration, repeating) {
   };
 }
 
-module.exports = pauseme; 
+module.exports = pauseMe; 
