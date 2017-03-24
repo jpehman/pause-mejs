@@ -17,7 +17,7 @@ function pauseMe (callback, duration, repeating) {
   "use strict";
 
   var startTime = null, pauseTime = null,
-      remainingTime = 0, originalCallback = callback,
+      remainingTime = 0, originalCallback = function () {},
       timer = null;
 
   callback = callback || function () {};
@@ -75,6 +75,8 @@ function pauseMe (callback, duration, repeating) {
   };
 
   if (repeating) {
+    originalCallback = callback;
+
     // setting the callback to call the passed callback
     callback = function () {
       originalCallback();
