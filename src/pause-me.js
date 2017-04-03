@@ -13,7 +13,7 @@
  * @param {number} duration - required - Milliseconds to set the timeout to. Throws an error if not a number or not included 
  * @param {bool} repeating - optional - When true the timeout is treated as an interval 
  */
-function pauseMe (callback, duration, repeating) {
+var pauseMe = function (callback, duration, repeating) {
   "use strict";
 
   var startTime = null, pauseTime = null,
@@ -108,4 +108,6 @@ function pauseMe (callback, duration, repeating) {
   };
 }
 
-module.exports = pauseMe;
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = pauseMe;
+}
