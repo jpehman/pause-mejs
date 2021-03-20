@@ -9,33 +9,39 @@ The "pause-me" utility allows pausing, resuming, stopping and starting a `setTim
 
 # Node #
 
-
+```javascript
       const pauseMe = require("pause-me");  
+```
 
 Use it like you would a `setTimeout`
 
-	  const myTimeout = pauseMe(function () {  
+```javascript
+	  const myTimeout = pauseMe(() => {  
 		console.log("timed out!");
 	  }, 5000);
-
+```
 
 or 
 
-	  const myTimeoutFunc = function () {
+```javascript
+	  const myTimeoutFunc = () => {
 		console.log("timed out!");
 	  };
 
 	  const myTimeout = pauseMe(myTimeoutFunc, 5000);  
+```
 
 ### Added in 1.1.0 ###
 
 You can also use it as a `setInterval` by setting the `repeating` parameter to ` true`.
 
+```javascript
 	   let counter = 0;
-	   const myInterval = pauseMe(function () {  
+	   const myInterval = pauseMe(() => {  
 		counter++;
 		console.log("Interval " + counter);
 	  }, 5000, true);
+```
 
 When the `setTimeout` is finished it immediately restarts in order to behave like an `setInterval`.
 
@@ -43,36 +49,46 @@ When the `setTimeout` is finished it immediately restarts in order to behave lik
 
 Then you can pause the timeout anywhere `myTimeout` is in scope.
 
+```javascript
 	  myTimeout.pause();  
+```
 
 ## resume ##
 
 When you are ready, you can then resume the timeout anywhere `myTimeout` is in scope.
 
+```javascript
 	  myTimeout.resume();  
+```
 
 ## stop ##
 
 If you want to clear the time out, just call `stop()`
 
+```javascript
 	  myTimeout.stop();  
+```
 
 This does not remove `myTimeout` from the scope.
 
 ## start ##
 So you can still start the timeout from the beginning again if you want to.
 
+```javascript
 	  myTimeout.start();  
+```
 
 ## timer ##
 Also added in 1.1.0, you can test the `setTimeout` instance to see whether or not it is still running.
 
+```javascript
 	  if (myTimeout.timer() === null) {  
 	    //myTimeout is not running
 	  }
 	  else {
 	    //myTimeout is running
 	  }
+```
 
 # License #
 

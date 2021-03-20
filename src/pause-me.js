@@ -13,10 +13,8 @@
  * @param {number} duration - required - Milliseconds to set the timeout to. Throws an error if not a number or not included 
  * @param {bool} repeating - optional - When true the timeout is treated as an interval 
  */
-var pauseMe = function (callback, duration, repeating) {
-  "use strict";
-
-  var startTime = null, pauseTime = null,
+const pauseMe = function (callback, duration, repeating) {
+  let startTime = null, pauseTime = null,
       remainingTime = 0, originalCallback = function () {},
       timer = null;
 
@@ -25,12 +23,12 @@ var pauseMe = function (callback, duration, repeating) {
     throw new TypeError("duration must be a number", "function timeout", 10);
   }
   else if (duration < 0) {
-    throw new Error("duration must be 0 or greater", "fuction timeout", 13);
+    throw new Error("duration must be 0 or greater", "function timeout", 13);
   }
 
   remainingTime = duration;
 
-  var start = function () {
+  const start = function () {
     timer = setTimeout(callback, remainingTime);
     startTime = new Date();
   },
@@ -107,6 +105,7 @@ var pauseMe = function (callback, duration, repeating) {
     }
   };
 }
+
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = pauseMe;

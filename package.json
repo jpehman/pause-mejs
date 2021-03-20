@@ -1,7 +1,7 @@
 {
   "name": "pause-me",
-  "version": "1.1.5",
-  "description": "A small dependency free setTimeout utility that allows pausing, resuming, stopping and starting a timeout.",
+  "version": "1.2.0",
+  "description": "A small dependency free setTimeout utility that allows pausing, resuming, stopping and starting a timeout or interval.",
   "author": "Jonathan Ehman <jpehman@gmail.com>",
   "main": "./src/pause-me.js",
   "repository": {
