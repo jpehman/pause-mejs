@@ -15,22 +15,22 @@
  */
 const pauseMe = function (callback, duration, repeating) {
   let startTime = null, pauseTime = null,
-      remainingTime = 0, originalCallback = function () {},
+      remainingTime = 0,
       timer = null;
 
   callback = callback || function () {};
   if (typeof duration !== "number") {
-    throw new TypeError("duration must be a number", "function timeout", 10);
+    throw new TypeError("duration must be a number", "function timeout");
   }
   else if (duration < 0) {
-    throw new Error("duration must be 0 or greater", "function timeout", 13);
+    throw new Error("duration must be 0 or greater", "function timeout");
   }
 
   remainingTime = duration;
 
   const start = function () {
     timer = setTimeout(callback, remainingTime);
-    startTime = new Date();
+    startTime = Date.now();
   },
 
   clear = function () {
@@ -44,7 +44,7 @@ const pauseMe = function (callback, duration, repeating) {
       return;
     }
 
-    pauseTime = new Date();
+    pauseTime = Date.now();
     clear();
   },
 
@@ -54,7 +54,7 @@ const pauseMe = function (callback, duration, repeating) {
       return;
     }
 
-    remainingTime -= pauseTime.getTime() - startTime.getTime();
+    remainingTime -= pauseTime - startTime;
     pauseTime = null;
     if (remainingTime) {
       start();
@@ -62,18 +62,13 @@ const pauseMe = function (callback, duration, repeating) {
   },
 
   stop = function () {
-    if (timer === null) {
-      // do not stop if paused or stopped already
-      return;
-    }
-
     remainingTime = duration;
     pauseTime = null;
     clear();
   };
 
   if (repeating) {
-    originalCallback = callback;
+    let originalCallback = callback;
 
     // setting the callback to call the passed callback
     callback = function () {
@@ -99,6 +94,11 @@ const pauseMe = function (callback, duration, repeating) {
     },
     "pause": pause,
     "resume": resume,
+    "restart": function () {
+      clear();
+      remainingTime = duration;
+      start();
+    },
     "stop": stop,
     "timer": function () {
       return timer;
