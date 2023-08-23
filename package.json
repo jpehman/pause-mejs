@@ -1,6 +1,6 @@
 {
   "name": "pause-me",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "A small dependency free setTimeout utility that allows pausing, resuming, stopping and starting a timeout or interval.",
   "author": "Jonathan Ehman <jpehman@gmail.com>",
   "main": "./src/pause-me.js",
@@ -20,6 +20,9 @@
   "license": "MIT",
   "homepage": "https://github.com/jpehman/pause-mejs#readme",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^29.4.1"
   }
 }

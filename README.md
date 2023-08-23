@@ -77,6 +77,14 @@ So you can still start the timeout from the beginning again if you want to.
 ```javascript
 	  myTimeout.start();  
 ```
+### Added in 1.3.0 ###
+
+## restart ##
+So you can restart the timeout at any point.
+
+```javascript
+    myTimeout.restart();
+```
 
 ## timer ##
 Also added in 1.1.0, you can test the `setTimeout` instance to see whether or not it is still running.
@@ -89,6 +97,9 @@ Also added in 1.1.0, you can test the `setTimeout` instance to see whether or no
 	    //myTimeout is running
 	  }
 ```
+
+### Possible Breaking Change in 1.3.0 ###
+Previously, `stop` would not do anything if the timeout was paused. This behavior is not intuitive, so now `stop` will clear the timeout and reset the timer even if the timeout is paused. 
 
 # License #
 
