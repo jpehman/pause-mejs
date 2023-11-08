@@ -2,7 +2,11 @@
   "name": "pause-me",
   "version": "1.3.0",
   "description": "A small dependency free setTimeout utility that allows pausing, resuming, stopping and starting a timeout or interval.",
-  "author": "Jonathan Ehman <jpehman@gmail.com>",
+  "author": {
+    "name": "Jonathan Ehman",
+    "email": "jpehman@gmail.com",
+    "url": "https://github.com/jpehman"
+  },
   "main": "./src/pause-me.js",
   "repository": {
     "type": "git",
