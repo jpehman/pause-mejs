@@ -1,1 +1,1 @@
-declare module '@mdaemon/emitter/dist/pause-me.cjs'
+declare module 'pause-me/dist/pause-me.cjs'

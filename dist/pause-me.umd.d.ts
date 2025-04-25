@@ -1,1 +1,1 @@
-declare module '@mdaemon/emitter/dist/pause-me.umd.js'
+declare module 'pause-me/dist/pause-me.umd.js'

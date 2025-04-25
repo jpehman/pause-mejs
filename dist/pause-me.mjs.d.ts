@@ -1,1 +1,1 @@
-declare module '@mdaemon/emitter/dist/pause-me.mjs'; 
+declare module 'pause-me/dist/pause-me.mjs'; 
