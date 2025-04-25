@@ -1,13 +1,18 @@
 {
   "name": "pause-me",
-  "version": "1.3.0",
+  "version": "2.0.0",
+  "type": "module",
   "description": "A small dependency free setTimeout utility that allows pausing, resuming, stopping and starting a timeout or interval.",
+  "main": "./dist/pause-me.umd.js",
+  "module": "dist/pause-me.mjs",
+  "browser": "dist/pause-me.umd.js",
+  "common": "dist/pause-me.cjs",
+  "types": "dist/pause-me.d.ts",
   "author": {
     "name": "Jonathan Ehman",
     "email": "jpehman@gmail.com",
     "url": "https://github.com/jpehman"
   },
-  "main": "./src/pause-me.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jpehman/pause-mejs.git"
@@ -24,9 +29,25 @@
   "license": "MIT",
   "homepage": "https://github.com/jpehman/pause-mejs#readme",
   "scripts": {
-    "test": "jest"
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "test": "jest",
+    "watch": "jest --watchAll",
+    "pub": "npm run build && npm run test && npm publish"
   },
   "devDependencies": {
-    "jest": "^29.4.1"
-  }
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.1.2",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "rollup": "^4.40.0",
+    "ts-jest": "^29.3.2",
+    "ts-node": "^10.9.2",
+    "tslib": "^2.8.1",
+    "typescript": "^5.8.3",
+    "@types/jest": "^29.5.14"
+  },
+  "files": [
+    "dist"
+  ]
 }

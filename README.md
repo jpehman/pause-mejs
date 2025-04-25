@@ -5,101 +5,141 @@ The "pause-me" utility allows pausing, resuming, stopping and starting a `setTim
 
 # Install #
 
-	  $ npm install pause-me --save  
+```bash
+$ npm install pause-me --save  
+```
 
-# Node #
+# Usage #
+
+## ESM Import (Recommended) ##
 
 ```javascript
-      const pauseMe = require("pause-me");  
+import pauseMe from "pause-me";
 ```
+
+## CommonJS Require ##
+
+```javascript
+const pauseMe = require("pause-me");
+```
+
+## Basic Usage ##
 
 Use it like you would a `setTimeout`
 
 ```javascript
-	  const myTimeout = pauseMe(() => {  
-		console.log("timed out!");
-	  }, 5000);
+const myTimeout = pauseMe(() => {  
+  console.log("timed out!");
+}, 5000);
 ```
 
 or 
 
 ```javascript
-	  const myTimeoutFunc = () => {
-		console.log("timed out!");
-	  };
+const myTimeoutFunc = () => {
+  console.log("timed out!");
+};
 
-	  const myTimeout = pauseMe(myTimeoutFunc, 5000);  
+const myTimeout = pauseMe(myTimeoutFunc, 5000);  
 ```
 
-### Added in 1.1.0 ###
+### TypeScript Support ###
 
-You can also use it as a `setInterval` by setting the `repeating` parameter to ` true`.
+As of version 2.0.0, pause-me is written in TypeScript and includes type definitions out of the box:
 
-```javascript
-	   let counter = 0;
-	   const myInterval = pauseMe(() => {  
-		counter++;
-		console.log("Interval " + counter);
-	  }, 5000, true);
+```typescript
+import pauseMe from "pause-me";
+
+// The returned object is fully typed
+const myTimeout = pauseMe(() => {
+  console.log("timed out!");
+}, 5000);
+
+// TypeScript will provide autocomplete and type checking
+myTimeout.pause();
 ```
 
-When the `setTimeout` is finished it immediately restarts in order to behave like an `setInterval`.
+### Interval Mode ###
 
-## pause ##
-
-Then you can pause the timeout anywhere `myTimeout` is in scope.
+You can also use it as a `setInterval` by setting the `repeating` parameter to `true`.
 
 ```javascript
-	  myTimeout.pause();  
+let counter = 0;
+const myInterval = pauseMe(() => {  
+  counter++;
+  console.log("Interval " + counter);
+}, 5000, true);
 ```
 
-## resume ##
+When the `setTimeout` is finished it immediately restarts in order to behave like a `setInterval`.
 
-When you are ready, you can then resume the timeout anywhere `myTimeout` is in scope.
+## API ##
+
+### pause ###
+
+Pause the timeout anywhere `myTimeout` is in scope.
 
 ```javascript
-	  myTimeout.resume();  
+myTimeout.pause();  
 ```
 
-## stop ##
+### resume ###
 
-If you want to clear the time out, just call `stop()`
+Resume the timeout anywhere `myTimeout` is in scope.
 
 ```javascript
-	  myTimeout.stop();  
+myTimeout.resume();  
+```
+
+### stop ###
+
+Clear the timeout.
+
+```javascript
+myTimeout.stop();  
 ```
 
 This does not remove `myTimeout` from the scope.
 
-## start ##
-So you can still start the timeout from the beginning again if you want to.
+### start ###
+Start the timeout from the beginning again.
 
 ```javascript
-	  myTimeout.start();  
+myTimeout.start();  
 ```
-### Added in 1.3.0 ###
 
-## restart ##
-So you can restart the timeout at any point.
+### restart ###
+Restart the timeout at any point.
 
 ```javascript
-    myTimeout.restart();
+myTimeout.restart();
 ```
 
-## timer ##
-Also added in 1.1.0, you can test the `setTimeout` instance to see whether or not it is still running.
+### timer ###
+Test the `setTimeout` instance to see whether or not it is still running.
 
 ```javascript
-	  if (myTimeout.timer() === null) {  
-	    //myTimeout is not running
-	  }
-	  else {
-	    //myTimeout is running
-	  }
+if (myTimeout.timer() === null) {  
+  // myTimeout is not running
+} else {
+  // myTimeout is running
+}
 ```
 
-### Possible Breaking Change in 1.3.0 ###
-Previously, `stop` would not do anything if the timeout was paused. This behavior is not intuitive, so now `stop` will clear the timeout and reset the timer even if the timeout is paused. 
+# Breaking Changes #
+
+## Version 2.0.0 ##
+
+- Converted to TypeScript with full type definitions
+- Changed to ESM format by default (CommonJS still supported)
+- Updated module exports to support both ESM and CommonJS
+- Improved error handling and type checking
+- Arrow functions used for better `this` binding
+- Stricter type checking for parameters
+
+## Version 1.3.0 ##
+
+Previously, `stop` would not do anything if the timeout was paused. This behavior is not intuitive, so now `stop` will clear the timeout and reset the timer even if the timeout is paused.
 
 # License #
 

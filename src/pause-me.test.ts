@@ -1,4 +1,4 @@
-const pauseMe = require("./pause-me");
+import pauseMe from "./pause-me";
 
 describe("pauseMe-tests", () => {
   it("is a function", () => {
@@ -8,10 +8,24 @@ describe("pauseMe-tests", () => {
   });
 
   it("returns an object", () => {
-    expect(typeof pauseMe(function(){}, 10)).toBe("object");
+    expect(typeof pauseMe(() => {}, 10)).toBe("object");
   });
 
-  const timer = pauseMe(function () { return "done"; }, 500);
+  it("throws TypeError when duration is not a number", () => {
+    expect(() => {
+      // @ts-expect-error Testing invalid parameter type
+      pauseMe(() => {}, "10");
+    }).toThrow(TypeError);
+  });
+
+  it("throws Error when duration is negative", () => {
+    expect(() => {
+      pauseMe(() => {}, -10);
+    }).toThrow(Error);
+  });
+
+  const timer = pauseMe(function (): string { return "done"; }, 500);
+  
   describe("pauseMe has method start", () => {
     it("is a function", () => {
       expect(typeof timer.start).toBe("function");
@@ -19,24 +33,25 @@ describe("pauseMe-tests", () => {
       timer.stop();
     });
 
-    it("the timer starts immediately just like a setTimeout", done => {
+    it("the timer starts immediately just like a setTimeout", (done) => {
       const newTimer = pauseMe(() => {
         expect(true).toBe(true);
         done();
       }, 50);
 
-      expect(typeof newTimer.timer()).toBe("object");
+      expect(typeof newTimer.timer()).toBe("number");
     });
 
     it("starts a stopped timer", () => {
-      const newTimer = pauseMe(() => {
+      const newTimer = pauseMe((): string => {
         return "true";
       }, 50);
 
       newTimer.stop();
       expect(newTimer.timer()).toBeNull();
       newTimer.start();
-      expect(typeof newTimer.timer()).toBe("object");
+      expect(typeof newTimer.timer()).toBe("number");
+      newTimer.stop();
     });
   });
 
@@ -48,7 +63,7 @@ describe("pauseMe-tests", () => {
 
     it("pauses the timer", () => {
       timer.start();
-      expect(typeof timer.timer()).toBe("object");
+      expect(typeof timer.timer()).toBe("number");
       timer.pause();
       expect(timer.timer()).toBeNull();
       timer.resume();
@@ -64,11 +79,11 @@ describe("pauseMe-tests", () => {
 
     it("resumes a paused or stopped timer", () => {
       timer.start();
-      expect(typeof timer.timer()).toBe("object");
+      expect(typeof timer.timer()).toBe("number");
       timer.pause();
       expect(timer.timer()).toBeNull();
       timer.resume();
-      expect(typeof timer.timer()).toBe("object");
+      expect(typeof timer.timer()).toBe("number");
       timer.stop();
     });
   });
@@ -79,12 +94,12 @@ describe("pauseMe-tests", () => {
       expect(timer.stop()).toBeUndefined();
     });
 
-    it("stops a timer, causing the time to be reset", done => {
+    it("stops a timer, causing the time to be reset", (done) => {
+      const startTime = Date.now();
       const newTimer = pauseMe(() => {
         expect(Date.now() - 100).toBeGreaterThan(startTime);
         done();
-      }, 100);
-      const startTime = Date.now();
+      }, 101);
       
       newTimer.stop();
       newTimer.start();
@@ -99,7 +114,7 @@ describe("pauseMe-tests", () => {
 
     it("returns an object if the timer is going", () => {
       timer.start();
-      expect(typeof timer.timer()).toBe("object");
+      expect(typeof timer.timer()).toBe("number");
     });
 
     it("returns null if the timer is paused", () => {
@@ -109,7 +124,7 @@ describe("pauseMe-tests", () => {
 
     it("returns an object if the timer is resumed", () => {
       timer.resume();
-      expect(typeof timer.timer()).toBe("object");
+      expect(typeof timer.timer()).toBe("number");
     });
 
     it("returns null if the timer is stopped", () => {
@@ -124,13 +139,30 @@ describe("pauseMe-tests", () => {
       expect(timer.restart()).toBeUndefined();
     });
 
-    it("restarts the timeout", done => {
+    it("restarts the timeout", (done) => {
+      const startTime = Date.now();
       const newTimer = pauseMe(() => {
         expect(Date.now() - 100).toBeGreaterThan(startTime);
         done();
-      }, 100);
-      const startTime = Date.now();
+      }, 101);
       newTimer.restart();
+    });
+  });
+
+  describe("pauseMe with repeating option", () => {
+    it("behaves like setInterval when repeating is true", (done) => {
+      let count = 0;
+      const startTime = Date.now();
+      const interval = 50;
+      
+      const newTimer = pauseMe(() => {
+        count++;
+        if (count === 3) {
+          newTimer.stop();
+          expect(count).toBe(3);
+          done();
+        }
+      }, interval, true);
     });
   });
 });

@@ -13,32 +13,71 @@
  * @param {number} duration - required - Milliseconds to set the timeout to. Throws an error if not a number or not included 
  * @param {bool} repeating - optional - When true the timeout is treated as an interval 
  */
-const pauseMe = function (callback, duration, repeating) {
-  let startTime = null, pauseTime = null,
-      remainingTime = 0,
-      timer = null;
+
+type Callback = () => void | null | undefined | any;
+
+interface PauseMeTimer {
+  /**
+   * Starts a stopped timer
+   */
+  start(): void;
+  
+  /**
+   * Pauses the timer
+   */
+  pause(): void;
+  
+  /**
+   * Resumes a paused timer
+   */
+  resume(): void;
+  
+  /**
+   * Restarts the timer from the beginning
+   */
+  restart(): void;
+  
+  /**
+   * Stops the timer and resets it
+   */
+  stop(): void;
+  
+  /**
+   * Returns the timer instance or null if not running
+   * @returns The timer instance or null
+   */
+  timer(): NodeJS.Timeout | null;
+}
+
+export default function pauseMe(callback: Callback, duration: number, repeating: boolean = false): PauseMeTimer {
+  let startTime: number | null = null, pauseTime: number | null = null,
+      remainingTime: number = 0,
+      timer: NodeJS.Timeout | null = null;
 
   callback = callback || function () {};
   if (typeof duration !== "number") {
-    throw new TypeError("duration must be a number", "function timeout");
+    throw new TypeError("duration must be a number");
   }
   else if (duration < 0) {
-    throw new Error("duration must be 0 or greater", "function timeout");
+    throw new Error("duration must be 0 or greater");
   }
 
   remainingTime = duration;
 
-  const start = function () {
+  const start = (): void => {
     timer = setTimeout(callback, remainingTime);
     startTime = Date.now();
   },
 
-  clear = function () {
+  clear = (): void => {
+    if (timer === null) {
+      return;
+    }
     clearTimeout(timer);
     timer = null;
   },
 
-  pause = function () {
+  pause = (): void => {
     if (timer === null) {
       // do not pause if paused or stopped
       return;
@@ -48,9 +87,9 @@ const pauseMe = function (callback, duration, repeating) {
     clear();
   },
 
-  resume = function () {
-    if (timer !== null || pauseTime === null) {
-      // do not resume if not paused or stopped
+  resume = (): void => {
+    if (timer !== null || pauseTime === null || startTime === null) {
+      // do not resume if not paused or stopped or startTime is null
       return;
     }
 
@@ -61,7 +100,7 @@ const pauseMe = function (callback, duration, repeating) {
     }
   },
 
-  stop = function () {
+  stop = (): void => {
     remainingTime = duration;
     pauseTime = null;
     clear();
@@ -82,7 +121,7 @@ const pauseMe = function (callback, duration, repeating) {
   start();
 
   return {
-    "start": function () {
+    start: (): void => {
       if (timer !== null) {
         // do not try to start if the timer is going already
         return;
@@ -92,21 +131,16 @@ const pauseMe = function (callback, duration, repeating) {
       remainingTime = duration;
       start();
     },
-    "pause": pause,
-    "resume": resume,
-    "restart": function () {
+    pause,
+    resume,
+    restart: (): void => {
       clear();
       remainingTime = duration;
       start();
     },
-    "stop": stop,
-    "timer": function () {
+    stop,
+    timer: (): NodeJS.Timeout | null => {
       return timer;
     }
   };
-}
-
-
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = pauseMe;
 }
