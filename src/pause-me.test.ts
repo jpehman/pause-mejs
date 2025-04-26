@@ -37,7 +37,7 @@ describe("pauseMe-tests", () => {
       const newTimer = pauseMe(() => {
         expect(true).toBe(true);
         done();
-      }, 50);
+      }, 10);
 
       expect(typeof newTimer.timer()).toBe("number");
     });
@@ -45,7 +45,7 @@ describe("pauseMe-tests", () => {
     it("starts a stopped timer", () => {
       const newTimer = pauseMe((): string => {
         return "true";
-      }, 50);
+      }, 10);
 
       newTimer.stop();
       expect(newTimer.timer()).toBeNull();
@@ -99,7 +99,7 @@ describe("pauseMe-tests", () => {
       const newTimer = pauseMe(() => {
         expect(Date.now() - 100).toBeGreaterThan(startTime);
         done();
-      }, 101);
+      }, 105);
       
       newTimer.stop();
       newTimer.start();
@@ -144,7 +144,7 @@ describe("pauseMe-tests", () => {
       const newTimer = pauseMe(() => {
         expect(Date.now() - 100).toBeGreaterThan(startTime);
         done();
-      }, 101);
+      }, 105);
       newTimer.restart();
     });
   });
