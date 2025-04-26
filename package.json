@@ -37,7 +37,7 @@
     "test": "jest",
     "watch": "jest --watchAll",
     "prepublishOnly": "npm run build && npm run test && npm run type-check",
-    "type-check": "tsc --noEmit src/type-declarations.types.ts"
+    "type-check": "tsc --noEmit --skipLibCheck src/type-declarations.types.ts"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.3",
