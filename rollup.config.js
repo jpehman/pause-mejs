@@ -1,7 +1,9 @@
+import { readFileSync } from "fs";
 import typescript from "@rollup/plugin-typescript";
 import commonjs from "@rollup/plugin-commonjs";
 import terser from "@rollup/plugin-terser";
-import pkg from "./package.json" with { type: "json" };
+
+const pkg = JSON.parse(readFileSync("./package.json", "utf-8"));
 
 export default [
   {
