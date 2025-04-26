@@ -1,6 +1,6 @@
 {
   "name": "pause-me",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "type": "module",
   "description": "A small dependency free setTimeout utilitnpmy that allows pausing, resuming, stopping and starting a timeout or interval.",
   "main": "dist/pause-me.umd.js",
