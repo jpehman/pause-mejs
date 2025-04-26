@@ -10,9 +10,9 @@
  * }, 5000);
  */
 
-type Callback = () => void | null | undefined | any;
+export type PauseMeCallback = () => void | null | undefined | any;
 
-interface PauseMeTimer {
+export interface PauseMeTimer {
   /**
    * Starts a stopped timer
    */
@@ -54,4 +54,4 @@ interface PauseMeTimer {
  * @throws {Error} If duration is less than 0
  * @returns A pausable timer object
  */
-export default function pauseMe(callback: Callback, duration: number, repeating?: boolean): PauseMeTimer;
+export default function pauseMe(callback: PauseMeCallback, duration: number, repeating?: boolean): PauseMeTimer;

@@ -1,3 +1,5 @@
+[![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjpehman%2Fpause-mejs%2Fmaster%2Fpackage.json&query=%24.version&prefix=v&label=npm&color=blue)](https://www.npmjs.com/package/pause-me) [![Static Badge](https://img.shields.io/badge/node-v16%2B-blue?style=flat&label=node&color=blue)](https://nodejs.org) [![install size](https://packagephobia.com/badge?p=pause-me)](https://packagephobia.com/result?p=pause-me) [![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjpehman%2Fpause-mejs%2Fmaster%2Fpackage.json&query=%24.license&label=license&color=green)](https://github.com/jpehman/pause-mejs/blob/main/LICENSE) [![Node.js CI](https://github.com/jpehman/pause-mejs/actions/workflows/node.js.yml/badge.svg)](https://github.com/jpehman/pause-mejs/actions/workflows/node.js.yml)
+ 
 # pause-me, A Dependency Free setTimeout Utility
 [ [pause-me on npm](https://www.npmjs.com/package/pause-me "npm") ]
 
@@ -7,6 +9,10 @@ The "pause-me" utility allows pausing, resuming, stopping and starting a `setTim
 
 ```bash
 $ npm install pause-me --save  
+```
+
+```yarn
+$ yarn add pause-me
 ```
 
 # Usage #

@@ -14,9 +14,9 @@
  * @param {bool} repeating - optional - When true the timeout is treated as an interval 
  */
 
-type Callback = () => void | null | undefined | any;
+export type PauseMeCallback = () => void | null | undefined | any;
 
-interface PauseMeTimer {
+export interface PauseMeTimer {
   /**
    * Starts a stopped timer
    */
@@ -49,7 +49,7 @@ interface PauseMeTimer {
   timer(): NodeJS.Timeout | null;
 }
 
-export default function pauseMe(callback: Callback, duration: number, repeating: boolean = false): PauseMeTimer {
+export default function pauseMe(callback: PauseMeCallback, duration: number, repeating: boolean = false): PauseMeTimer {
   let startTime: number | null = null, pauseTime: number | null = null,
       remainingTime: number = 0,
       timer: NodeJS.Timeout | null = null;
