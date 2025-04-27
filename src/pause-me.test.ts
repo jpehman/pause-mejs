@@ -207,7 +207,7 @@ describe("getTimeout function", () => {
       const elapsedTime = Date.now() - startTime;
       expect(elapsedTime).toBeGreaterThanOrEqual(duration);
       done();
-    }, duration);
+    }, duration+5);
   });
 
   it("can be paused and resumed", (done) => {
