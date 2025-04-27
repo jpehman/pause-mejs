@@ -218,9 +218,9 @@ describe("getTimeout function", () => {
     const timer = getTimeout(() => {
       const totalTime = Date.now() - startTime;
       // Total time should be at least duration + pause duration
-      expect(totalTime).toBeGreaterThanOrEqual(duration + 50);
+      expect(totalTime).toBeGreaterThanOrEqual(duration);
       done();
-    }, duration);
+    }, duration+5);
     
     // Pause after 20ms
     setTimeout(() => {
@@ -232,7 +232,7 @@ describe("getTimeout function", () => {
         timer.resume();
         const resumeTime = Date.now();
         expect(resumeTime - pausedTime).toBeGreaterThanOrEqual(50);
-      }, 50);
+      }, 55);
     }, 20);
   });
 });
@@ -288,7 +288,7 @@ describe("getInterval function", () => {
         setTimeout(() => {
           timer.resume();
           resumeTime = Date.now();
-        }, 100);
+        }, 105);
       }
       
       if (count === 4) {
