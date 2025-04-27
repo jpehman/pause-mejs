@@ -1,4 +1,4 @@
-import pauseMe from "./pause-me";
+import pauseMe, { getTimeout, getInterval } from "./pause-me";
 
 describe("pauseMe-tests", () => {
   it("is a function", () => {
@@ -11,11 +11,11 @@ describe("pauseMe-tests", () => {
     expect(typeof pauseMe(() => {}, 10)).toBe("object");
   });
 
-  it("throws TypeError when duration is not a number", () => {
+  it("throws Error when duration is not a number", () => {
     expect(() => {
       // @ts-expect-error Testing invalid parameter type
       pauseMe(() => {}, "10");
-    }).toThrow(TypeError);
+    }).toThrow(Error);
   });
 
   it("throws Error when duration is negative", () => {
@@ -164,5 +164,220 @@ describe("pauseMe-tests", () => {
         }
       }, interval, true);
     });
+  });
+});
+
+describe("getTimeout function", () => {
+  it("is a function", () => {
+    expect(getTimeout).not.toBeUndefined();
+    expect(getTimeout).not.toBeNull();
+    expect(typeof getTimeout).toBe("function");
+  });
+
+  it("returns an object implementing IPauseMeTimer", () => {
+    const timer = getTimeout(() => {}, 10);
+    expect(typeof timer).toBe("object");
+    expect(typeof timer.start).toBe("function");
+    expect(typeof timer.pause).toBe("function");
+    expect(typeof timer.resume).toBe("function");
+    expect(typeof timer.restart).toBe("function");
+    expect(typeof timer.stop).toBe("function");
+    expect(typeof timer.timer).toBe("function");
+    timer.stop();
+  });
+
+  it("throws Error when duration is not a number", () => {
+    expect(() => {
+      // @ts-expect-error Testing invalid parameter type
+      getTimeout(() => {}, "10");
+    }).toThrow(Error);
+  });
+
+  it("throws Error when duration is negative", () => {
+    expect(() => {
+      getTimeout(() => {}, -10);
+    }).toThrow(Error);
+  });
+
+  it("executes callback after specified duration", (done) => {
+    const startTime = Date.now();
+    const duration = 50;
+    
+    getTimeout(() => {
+      const elapsedTime = Date.now() - startTime;
+      expect(elapsedTime).toBeGreaterThanOrEqual(duration);
+      done();
+    }, duration);
+  });
+
+  it("can be paused and resumed", (done) => {
+    const startTime = Date.now();
+    const duration = 100;
+    let pausedTime: number;
+    
+    const timer = getTimeout(() => {
+      const totalTime = Date.now() - startTime;
+      // Total time should be at least duration + pause duration
+      expect(totalTime).toBeGreaterThanOrEqual(duration + 50);
+      done();
+    }, duration);
+    
+    // Pause after 20ms
+    setTimeout(() => {
+      timer.pause();
+      pausedTime = Date.now();
+      
+      // Resume after 50ms pause
+      setTimeout(() => {
+        timer.resume();
+        const resumeTime = Date.now();
+        expect(resumeTime - pausedTime).toBeGreaterThanOrEqual(50);
+      }, 50);
+    }, 20);
+  });
+});
+
+// Tests for getInterval
+describe("getInterval function", () => {
+  it("is a function", () => {
+    expect(getInterval).not.toBeUndefined();
+    expect(getInterval).not.toBeNull();
+    expect(typeof getInterval).toBe("function");
+  });
+
+  it("returns an object implementing IPauseMeTimer", () => {
+    const timer = getInterval(() => {}, 10);
+    expect(typeof timer).toBe("object");
+    expect(typeof timer.start).toBe("function");
+    expect(typeof timer.pause).toBe("function");
+    expect(typeof timer.resume).toBe("function");
+    expect(typeof timer.restart).toBe("function");
+    expect(typeof timer.stop).toBe("function");
+    expect(typeof timer.timer).toBe("function");
+    timer.stop();
+  });
+
+  it("executes callback repeatedly at specified interval", (done) => {
+    let count = 0;
+    const interval = 50;
+    
+    const timer = getInterval(() => {
+      count++;
+      if (count === 3) {
+        timer.stop();
+        expect(count).toBe(3);
+        done();
+      }
+    }, interval);
+  });
+
+  it("can be paused and resumed", (done) => {
+    let count = 0;
+    let pauseTime: number;
+    let resumeTime: number;
+    
+    const timer = getInterval(() => {
+      count++;
+      if (count === 2) {
+        // Pause after second execution
+        expect(typeof timer.timer()).toBe("number");
+        timer.pause();
+        pauseTime = Date.now();
+        
+        // Resume after 100ms
+        setTimeout(() => {
+          timer.resume();
+          resumeTime = Date.now();
+        }, 100);
+      }
+      
+      if (count === 4) {
+        timer.stop();
+        // Verify there was a significant pause
+        expect(resumeTime - pauseTime).toBeGreaterThanOrEqual(100);
+        done();
+      }
+    }, 50);
+  });
+
+  it("can be stopped and restarted", (done) => {
+    let firstRunCount = 0;
+    let secondRunCount = 0;
+    const interval = 30;
+    
+    const timer = getInterval(() => {
+      firstRunCount++;
+      
+      if (firstRunCount === 2) {
+        timer.stop();
+        expect(timer.timer()).toBeNull();
+        
+        // Start a second run after stopping
+        setTimeout(() => {
+          timer.start();
+          
+          // Now we're counting the second run
+          const secondTimer = setInterval(() => {
+            secondRunCount++;
+            
+            if (secondRunCount === 2) {
+              clearInterval(secondTimer);
+              timer.stop();
+              expect(firstRunCount).toBe(4);
+              expect(secondRunCount).toBe(2);
+              done();
+            }
+          }, 30);
+        }, 50);
+      }
+    }, interval);
+  });
+});
+
+// Test for comparing behavior between original pauseMe and new functions
+describe("compatibility between pauseMe and new functions", () => {
+  it("getTimeout behaves the same as pauseMe with repeating=false", (done) => {
+    let pauseMeCalled = false;
+    let getTimeoutCalled = false;
+    
+    const checkBothCalled = () => {
+      if (pauseMeCalled && getTimeoutCalled) {
+        done();
+      }
+    };
+    
+    pauseMe(() => {
+      pauseMeCalled = true;
+      checkBothCalled();
+    }, 30, false);
+    
+    getTimeout(() => {
+      getTimeoutCalled = true;
+      checkBothCalled();
+    }, 30);
+  });
+  
+  it("getInterval behaves the same as pauseMe with repeating=true", (done) => {
+    let pauseMeCount = 0;
+    let getIntervalCount = 0;
+    
+    const pauseMeTimer = pauseMe(() => {
+      pauseMeCount++;
+      if (pauseMeCount === 3) {
+        pauseMeTimer.stop();
+      }
+    }, 30, true);
+    
+    const intervalTimer = getInterval(() => {
+      getIntervalCount++;
+      if (getIntervalCount === 3) {
+        intervalTimer.stop();
+        
+        // Both should have executed the same number of times
+        expect(pauseMeCount).toBe(3);
+        expect(getIntervalCount).toBe(3);
+        done();
+      }
+    }, 30);
   });
 });

@@ -10,9 +10,9 @@
  * }, 5000);
  */
 
-export type PauseMeCallback = () => void | null | undefined | any;
+export type TPauseMeCallback = () => void | null | undefined | any;
 
-export interface PauseMeTimer {
+export interface IPauseMeTimer {
   /**
    * Starts a stopped timer
    */
@@ -46,12 +46,35 @@ export interface PauseMeTimer {
 }
 
 /**
+ * Creates a pausable timer 
+ * @param callback - Function to execute after the timer completes
+ * @param duration - Duration in milliseconds
+ * @throws {Error} If callback is not a function
+ * @throws {Error} If duration is not a number
+ * @throws {Error} If duration is less than 0
+ * @returns A pausable timer object
+*/ 
+export function getTimeout(callback: TPauseMeCallback, duration: number): IPauseMeTimer;
+
+/**
+ * Creates a pausable repeating timer
+ * @param callback - Function to execute after the timer completes
+ * @param duration - Duration in milliseconds
+ * @throws {Error} If callback is not a function
+ * @throws {Error} If duration is not a number
+ * @throws {Error} If duration is less than 0
+ * @returns A pausable timer object
+*/ 
+export function getInterval(callback: TPauseMeCallback, duration: number): IPauseMeTimer;
+
+/**
  * Creates a pausable timer
  * @param callback - Function to execute after the timer completes
  * @param duration - Duration in milliseconds
  * @param repeating - When true, the timer behaves like setInterval
- * @throws {TypeError} If duration is not a number
+ * @throws {Error} If callback is not a function
+ * @throws {Error} If duration is not a number
  * @throws {Error} If duration is less than 0
  * @returns A pausable timer object
  */
-export default function pauseMe(callback: PauseMeCallback, duration: number, repeating?: boolean): PauseMeTimer;
+export default function pauseMe(callback: TPauseMeCallback, duration: number, repeating?: boolean): IPauseMeTimer;

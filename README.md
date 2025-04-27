@@ -65,6 +65,26 @@ const myTimeout = pauseMe(() => {
 myTimeout.pause();
 ```
 
+### New in v2.1.0: Direct Timer and Interval Creation ###
+
+Version 2.1.0 introduces two new functions for creating timers and intervals directly:
+
+```typescript
+import { getTimeout, getInterval } from "pause-me";
+
+// Create a timeout directly
+const myTimeout = getTimeout(() => {
+  console.log("Timeout executed!");
+}, 5000);
+
+// Create an interval directly
+const myInterval = getInterval(() => {
+  console.log("Interval executed!");
+}, 1000);
+```
+
+These functions provide the same interface as the original `pauseMe` function but make the intent clearer when you specifically need a timeout or interval.
+
 ### Interval Mode ###
 
 You can also use it as a `setInterval` by setting the `repeating` parameter to `true`.
@@ -76,8 +96,6 @@ const myInterval = pauseMe(() => {
   console.log("Interval " + counter);
 }, 5000, true);
 ```
-
-When the `setTimeout` is finished it immediately restarts in order to behave like a `setInterval`.
 
 ## API ##
 
@@ -133,6 +151,14 @@ if (myTimeout.timer() === null) {
 ```
 
 # Breaking Changes #
+
+## Version 2.1.0 ##
+
+- Added new functions `getTimeout` and `getInterval` for direct timer/interval creation
+- Improved internal architecture with abstract class implementation
+- Enhanced type safety and error handling
+- More accurate remaining time calculation
+- Better handling of edge cases
 
 ## Version 2.0.0 ##
 

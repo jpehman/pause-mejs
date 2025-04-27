@@ -1,2 +1,2 @@
 declare module "pause-me/dist/pause-me.umd.js";
-export { default } from "./pause-me";
+export { default, getTimeout, getInterval } from "./pause-me";

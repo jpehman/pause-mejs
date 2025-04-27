@@ -9,9 +9,9 @@ export default [
   {
     input: "src/pause-me.ts",
     output: [
-      { file: pkg.main, format: "umd", exports: "default", name: "pauseMe" },
-      { file: pkg.common, format: "cjs", exports: "default", name: "pauseMe" },
-      { file: pkg.module, format: "es", exports: "default", name: "pauseMe" }
+      { file: pkg.main, format: "umd", exports: "named", name: "pauseMe" },
+      { file: pkg.common, format: "cjs", exports: "named", name: "pauseMe" },
+      { file: pkg.module, format: "es", exports: "named", name: "pauseMe" }
     ],
     plugins: [
       typescript(),

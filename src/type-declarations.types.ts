@@ -6,6 +6,9 @@
 // Test default import
 import defaultImport from "./pause-me";
 
+// Test named imports for new functions
+import { getTimeout, getInterval } from "./pause-me";
+
 // Test ESM specific import
 import esmImport from "../dist/pause-me.mjs";
 
@@ -28,15 +31,31 @@ const testDefaultImport: {
 // Test that ESM import has the same type
 const testEsmImport: typeof testDefaultImport = esmImport(() => {}, 1000);
 
+// Test getTimeout function
+const testGetTimeout: typeof testDefaultImport = getTimeout(() => {}, 1000);
+
+// Test getInterval function
+const testGetInterval: typeof testDefaultImport = getInterval(() => {}, 1000);
+
 // This function doesn't run, it just verifies types
 export function verifyTypeDeclarations(): void {
   // Verify function signatures
   defaultImport(() => {}, 1000);
   defaultImport(() => {}, 1000, true);
+
+  // Verify getTimeout and getInterval signatures
+  getTimeout(() => {}, 1000);
+  getInterval(() => {}, 1000);
   
   // Verify error cases (these should show type errors)
   // @ts-expect-error - duration should be a number
   defaultImport(() => {}, "1000");
+
+  // @ts-expect-error - duration should be a number
+  getTimeout(() => {}, "1000");
+  
+  // @ts-expect-error - duration should be a number
+  getInterval(() => {}, "1000");
   
   // Verify method existence
   testDefaultImport.start();
@@ -81,5 +100,27 @@ export function verifyTypeDeclarations(): void {
   const umdTimer = testUmdImport.timer();
   if (umdTimer) {
     umdTimer; // This is just to avoid unused variable error
+  }
+
+  // Verify getTimeout has the same methods
+  testGetTimeout.start();
+  testGetTimeout.pause();
+  testGetTimeout.resume();
+  testGetTimeout.restart();
+  testGetTimeout.stop();
+  const getTimeoutTimer = testGetTimeout.timer();
+  if (getTimeoutTimer) {
+    getTimeoutTimer; // This is just to avoid unused variable error
+  }
+  
+  // Verify getInterval has the same methods
+  testGetInterval.start();
+  testGetInterval.pause();
+  testGetInterval.resume();
+  testGetInterval.restart();
+  testGetInterval.stop();
+  const getIntervalTimer = testGetInterval.timer();
+  if (getIntervalTimer) {
+    getIntervalTimer; // This is just to avoid unused variable error
   }
 }

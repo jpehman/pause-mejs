@@ -14,9 +14,9 @@
  * @param {bool} repeating - optional - When true the timeout is treated as an interval 
  */
 
-export type PauseMeCallback = () => void | null | undefined | any;
+export type TPauseMeCallback = () => void | null | undefined | any;
 
-export interface PauseMeTimer {
+export interface IPauseMeTimer {
   /**
    * Starts a stopped timer
    */
@@ -49,98 +49,200 @@ export interface PauseMeTimer {
   timer(): NodeJS.Timeout | null;
 }
 
-export default function pauseMe(callback: PauseMeCallback, duration: number, repeating: boolean = false): PauseMeTimer {
-  let startTime: number | null = null, pauseTime: number | null = null,
-      remainingTime: number = 0,
-      timer: NodeJS.Timeout | null = null;
-
-  callback = callback || function () {};
-  if (typeof duration !== "number") {
-    throw new TypeError("duration must be a number");
+abstract class PauseMe implements IPauseMeTimer {
+  private _callback: TPauseMeCallback;
+  private _duration: number = 0;
+  private _remainingTime: number = 0;
+  private _timeout: NodeJS.Timeout | null = null;
+  private _startTime: number | null = null;
+  private _pauseTime: number | null = null;
+  constructor(callback: TPauseMeCallback, duration: number) {
+    this.callback = callback;
+    this.duration = duration;
+    this.remainingTime = duration;
   }
-  else if (duration < 0) {
-    throw new Error("duration must be 0 or greater");
+
+  set callback(callback: TPauseMeCallback) {
+    if (typeof callback !== "function") {
+      throw new Error("callback must be a function");
+    }
+    this._callback = callback;
   }
 
-  remainingTime = duration;
+  get callback(): TPauseMeCallback {
+    return this._callback;
+  }
 
-  const start = (): void => {
-    timer = setTimeout(callback, remainingTime);
-    startTime = Date.now();
-  },
+  set duration(duration: number) {
+    if (typeof duration !== "number" || duration <= 0) {
+      throw new Error("duration must be a number greater than 0");
+    }
+    this._duration = duration;
+  }
 
-  clear = (): void => {
-    if (timer === null) {
+  get duration(): number {
+    return this._duration;
+  }
+
+  set remainingTime(remainingTime: number) {
+    if (typeof remainingTime !== "number") {
+      throw new Error("remainingTime must be a number");
+    }
+
+    this._remainingTime = remainingTime;
+  }
+
+  get remainingTime(): number {
+    return this._remainingTime;
+  }
+
+  set timeout(timeout: NodeJS.Timeout | null) {
+    this._timeout = timeout;
+  }
+
+  get timeout(): NodeJS.Timeout | null {
+    return this._timeout;
+  }
+
+  set startTime(startTime: number | null) {
+    if (startTime !== null && typeof startTime !== "number") {
+      throw new Error("startTime must be a number or null");
+    }
+    this._startTime = startTime;
+  }
+
+  get startTime(): number | null {
+    return this._startTime;
+  }
+
+  set pauseTime(pauseTime: number | null) {
+    if (pauseTime !== null && typeof pauseTime !== "number") {
+      throw new Error("pauseTime must be a number or null");
+    }
+    this._pauseTime = pauseTime;
+  }
+
+  get pauseTime(): number | null {
+    return this._pauseTime;
+  }
+
+  abstract initialize(): void;
+  abstract clear(): void;
+
+  start = (): void => {
+    if (this.timeout !== null) {
+      // do not try to start if the timer is going already
       return;
     }
-    clearTimeout(timer);
-    timer = null;
-  },
+
+    this.remainingTime = this.duration;
+    this.initialize();
+  };
 
   pause = (): void => {
-    if (timer === null) {
+    if (this.timeout === null) {
       // do not pause if paused or stopped
       return;
     }
 
-    pauseTime = Date.now();
-    clear();
-  },
+    this.pauseTime = Date.now();
+    this.clear();
+  };
+
+  stop = (): void => {
+    this.remainingTime = this.duration;
+    this.pauseTime = null;
+    this.clear();
+  };
 
   resume = (): void => {
-    if (timer !== null || pauseTime === null || startTime === null) {
-      // do not resume if not paused or stopped or startTime is null
+    if (this.timeout !== null || this.pauseTime === null || this.startTime === null) {
       return;
     }
 
-    remainingTime -= pauseTime - startTime;
-    pauseTime = null;
-    if (remainingTime) {
-      start();
-    }
-  },
-
-  stop = (): void => {
-    remainingTime = duration;
-    pauseTime = null;
-    clear();
+    this.remainingTime -= (this.pauseTime - this.startTime);
+    this.pauseTime = null;
+    this.remainingTime > 0 && this.initialize();
   };
 
-  if (repeating) {
-    let originalCallback = callback;
+  restart = (): void => {
+    this.clear();
+    this.remainingTime = this.duration;
+    this.initialize();
+  };
 
-    // setting the callback to call the passed callback
-    callback = function () {
-      originalCallback();
-      remainingTime = duration;
-      clear();
-      start();
-    }
+  timer = (): NodeJS.Timeout | null => {
+    return this.timeout;
+  };
+}
+
+class PauseMeTimer extends PauseMe {
+  constructor(callback: TPauseMeCallback, duration: number) {
+    super(callback, duration);
+
+    this.initialize();
   }
 
-  start();
-
-  return {
-    start: (): void => {
-      if (timer !== null) {
-        // do not try to start if the timer is going already
-        return;
-      }
-
-      // the remainingTime must be reset
-      remainingTime = duration;
-      start();
-    },
-    pause,
-    resume,
-    restart: (): void => {
-      clear();
-      remainingTime = duration;
-      start();
-    },
-    stop,
-    timer: (): NodeJS.Timeout | null => {
-      return timer;
-    }
+  initialize = () => {
+    this.timeout = setTimeout(this.callback, this.remainingTime);
+    this.startTime = Date.now();
   };
+
+  clear = (): void => {
+    if (this.timeout === null) {
+      return;
+    }
+    clearTimeout(this.timeout);
+    this.timeout = null;
+  };
+}
+
+class PauseMeInterval extends PauseMe {
+  constructor(callback: TPauseMeCallback, duration: number) {
+    super(callback, duration);
+
+    this.initialize();
+  }
+
+  initialize = (): void => {
+    this.timeout = setInterval(this.callback, this.remainingTime);
+    this.startTime = Date.now();
+  };
+
+  clear = (): void => {
+    if (this.timeout === null) {
+      return;
+    }
+    clearInterval(this.timeout);
+    this.timeout = null;
+  };
+
+  resume = (): void => {
+    if (this.timeout !== null || this.pauseTime === null || this.startTime === null) {
+      return;
+    }
+
+    this.remainingTime -= (this.pauseTime - this.startTime);
+    this.pauseTime = null;
+    if (this.remainingTime <= 0) {
+      this.remainingTime = this.duration;
+    }
+    this.remainingTime > 0 && this.initialize();
+  };
+}
+
+export function getTimeout(callback: TPauseMeCallback, duration: number): IPauseMeTimer {
+  return new PauseMeTimer(callback, duration);
+}
+
+export function getInterval(callback: TPauseMeCallback, duration: number): IPauseMeTimer { 
+  return new PauseMeInterval(callback, duration);
+}
+
+export default function pauseMe(callback: TPauseMeCallback, duration: number, repeating: boolean = false): IPauseMeTimer {
+  if (repeating) {
+    return getInterval(callback, duration);
+  } 
+    
+  return getTimeout(callback, duration);
 }
