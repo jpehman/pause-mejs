@@ -17,6 +17,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          registry-url: 'https://registry.npmjs.org/'
 
       - name: Install dependencies
         run: npm ci
@@ -31,6 +32,13 @@ jobs:
           zip ../pause-me-${{ github.ref_name }}-cjs.zip pause-me.cjs pause-me.d.ts
           zip ../pause-me-${{ github.ref_name }}-umd.zip pause-me.umd.js pause-me.d.ts
           zip ../pause-me-${{ github.ref_name }}-all.zip pause-me.*
+
+      # 🟢 Publish to npm
+      - name: Publish to npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          npm publish --access public
 
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
