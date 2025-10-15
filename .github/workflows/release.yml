@@ -1,0 +1,46 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Package outputs
+        run: |
+          cd dist
+          zip ../pause-me-${{ github.ref_name }}-esm.zip pause-me.mjs pause-me.d.ts
+          zip ../pause-me-${{ github.ref_name }}-cjs.zip pause-me.cjs pause-me.d.ts
+          zip ../pause-me-${{ github.ref_name }}-umd.zip pause-me.umd.js pause-me.d.ts
+          zip ../pause-me-${{ github.ref_name }}-all.zip pause-me.*
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          files: |
+            pause-me-${{ github.ref_name }}-esm.zip
+            pause-me-${{ github.ref_name }}-cjs.zip
+            pause-me-${{ github.ref_name }}-umd.zip
+            pause-me-${{ github.ref_name }}-all.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
